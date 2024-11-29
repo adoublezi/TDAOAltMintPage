@@ -6,7 +6,7 @@
     <title>NFT Membership Minting</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Global Styles */
+        /* All existing styles remain the same */
         body {
             background-image: url('https://www.tdao.to/img/toronto_back_dark.4535dd34.jpg');
             background-size: cover;
@@ -17,11 +17,9 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            /* Adding a semi-transparent overlay for better readability */
             position: relative;
         }
 
-        /* Overlay to darken the background image for better text visibility */
         body::before {
             content: "";
             position: fixed;
@@ -29,17 +27,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); /* Reduced opacity for a lighter overlay */
+            background-color: rgba(0, 0, 0, 0.4);
             z-index: -1;
         }
 
-        /* Header Styles */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            background-color: rgba(18, 18, 18, 0.8); /* Slight transparency */
+            background-color: rgba(18, 18, 18, 0.8);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
             position: fixed;
             width: 100%;
@@ -64,13 +61,11 @@
             color: #ff4c96;
         }
 
-        /* Main Container Styles */
         main.container {
             max-width: 800px;
-            margin: 140px auto 80px; /* Adjusted top margin to account for fixed header */
+            margin: 140px auto 80px;
             padding: 20px;
             text-align: center;
-            /* Removed background-color, border-radius, and box-shadow for transparency */
         }
 
         h1 {
@@ -86,7 +81,6 @@
             text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
         }
 
-        /* Mission Statement Styles */
         .mission-statement {
             font-size: 16px;
             margin: 20px 0;
@@ -95,9 +89,8 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
         }
 
-        /* Input Field Styles */
         .input-field {
-            background-color: rgba(42, 42, 42, 0.8); /* Semi-transparent background for input */
+            background-color: rgba(42, 42, 42, 0.8);
             border: 1px solid #ff4c96;
             border-radius: 5px;
             padding: 10px;
@@ -107,7 +100,6 @@
             font-size: 16px;
         }
 
-        /* Mint Button Styles */
         .mint-button {
             background-color: #ff4c96;
             border: none;
@@ -120,11 +112,16 @@
         }
 
         .mint-button:hover {
-            background-color: #e04383; /* Slightly darker shade for hover */
+            background-color: #e04383;
             transform: scale(1.05);
         }
 
-        /* Loader Styles */
+        .mint-button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .loader {
             border: 8px solid #f3f3f3;
             border-top: 8px solid #ff4c96;
@@ -133,7 +130,7 @@
             height: 60px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
-            display: none; /* Hidden by default */
+            display: none;
         }
 
         @keyframes spin {
@@ -141,7 +138,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Message Styles */
         #message {
             margin-top: 20px;
             font-size: 16px;
@@ -153,12 +149,11 @@
         }
 
         .error {
-            color: #ff6fba; /* Lighter pink for errors */
+            color: #ff6fba;
         }
 
-        /* Footer Styles */
         footer {
-            background-color: rgba(18, 18, 18, 0.8); /* Slight transparency */
+            background-color: rgba(18, 18, 18, 0.8);
             color: #e0e0e0;
             text-align: center;
             padding: 20px;
@@ -168,7 +163,6 @@
             box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        /* Responsive Design */
         @media (max-width: 600px) {
             main.container {
                 margin: 100px 20px 60px;
@@ -201,7 +195,6 @@
             }
         }
 
-        /* Visually Hidden Class for Accessibility */
         .visually-hidden {
             position: absolute;
             width: 1px;
@@ -218,11 +211,7 @@
 <body>
     <header>
         <div class="logo">TDAO NFT Membership</div>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Mint</a>
-            <a href="#">Contact</a>
-        </nav>
+   
     </header>
 
     <main class="container">
@@ -231,13 +220,12 @@
         <label for="walletAddress" class="visually-hidden">Wallet Address</label>
         <input type="text" id="walletAddress" class="input-field" placeholder="Enter Wallet Address" />
         
-        <!-- Mission Statement -->
         <p class="mission-statement">
             Cultivate Tech Talent and Innovation: Build, nurture, and retain tech talent, making Toronto a beacon of technological excellence and innovation on the global stage.
         </p>
         
         <br>
-        <button class="mint-button" aria-label="Mint your NFT Membership">Mint Now</button>
+        <button class="mint-button" onclick="mintNFT()" id="mintButton">Mint Now</button>
         <div id="loader" class="loader"></div>
         <div id="message"></div>
     </main>
@@ -246,73 +234,60 @@
         &copy; 2024 Toronto DAO. All rights reserved.
     </footer>
 
-    <!-- Ethers.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
-
     <script>
-        const contractAddress = "YOUR_CONTRACT_ADDRESS";
-        const contractABI = [
-            // Example ABI for ERC-721 mint function
-            "function mint(address to) public payable"
-        ];
-
-        function displayMessage(text, type) {
-            const messageDiv = document.getElementById('message');
-            messageDiv.textContent = text;
-            messageDiv.className = type;
-        }
-
         async function mintNFT() {
-            const walletAddress = document.getElementById('walletAddress').value.trim();
+            const addressInput = document.getElementById('walletAddress');
+            const mintButton = document.getElementById('mintButton');
             const loader = document.getElementById('loader');
             const messageDiv = document.getElementById('message');
+            const address = addressInput.value.trim();
 
-            // Clear previous messages
-            displayMessage('', '');
-
-            // Validate wallet address
-            if (!ethers.utils.isAddress(walletAddress)) {
-                displayMessage("Please enter a valid wallet address.", "error");
-                return;
-            }
-
-            // Check for MetaMask
-            if (typeof window.ethereum === 'undefined') {
-                displayMessage("MetaMask is not installed. Please install it to mint an NFT.", "error");
+            // Reset UI
+            messageDiv.className = '';
+            messageDiv.textContent = '';
+            
+            // Basic address validation
+            if (!address || !address.match(/^0x[a-fA-F0-9]{40}$/)) {
+                messageDiv.className = 'error';
+                messageDiv.textContent = 'Please enter a valid Ethereum address';
                 return;
             }
 
             try {
-                // Show loader
+                // Disable button and show loading state
+                mintButton.disabled = true;
                 loader.style.display = 'block';
+                messageDiv.textContent = 'Processing transaction...';
 
-                // Request account access
-                await window.ethereum.request({ method: 'eth_requestAccounts' });
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const signer = provider.getSigner();
-                const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-                // Initiate mint transaction
-                const tx = await contract.mint(walletAddress, {
-                    value: ethers.utils.parseEther("0.05") // Example minting fee
+                const response = await fetch('http://170.75.166.90:3000/mint', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ recipientAddress: address })
                 });
 
-                // Wait for transaction confirmation
-                await tx.wait();
+                const result = await response.json();
 
-                // Success message
-                displayMessage("🎉 NFT minted successfully!", "success");
+                if (result.success) {
+                    messageDiv.className = 'success';
+                    messageDiv.innerHTML = `
+                        🎉 NFT Minted Successfully!<br>
+                        Transaction Hash: ${result.transactionHash}<br>
+                        Block Number: ${result.blockNumber}
+                    `;
+                } else {
+                    throw new Error(result.error || 'Minting failed');
+                }
             } catch (error) {
-                console.error(error);
-                displayMessage("❌ Minting failed. Please try again.", "error");
+                messageDiv.className = 'error';
+                messageDiv.textContent = `Error: ${error.message}`;
             } finally {
-                // Hide loader
+                // Reset button state and hide loader
+                mintButton.disabled = false;
                 loader.style.display = 'none';
             }
         }
-
-        // Event Listener for Mint Button
-        document.querySelector('.mint-button').addEventListener('click', mintNFT);
     </script>
 </body>
 </html>
